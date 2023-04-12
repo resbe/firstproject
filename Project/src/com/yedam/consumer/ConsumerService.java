@@ -51,7 +51,7 @@ public class ConsumerService {
 		
 		
 	public void consumerAdd() {
-		System.out.println("아이디 >");
+		System.out.println("아이디>");
 		String consumerId =  sc.nextLine();
 		System.out.println("비밀번호>");
 		String consumerPw = sc.nextLine();
@@ -93,12 +93,18 @@ public class ConsumerService {
 		}
 	
 	
-		}
-	
-	
-	public void getselfinfo() {
-		
-		
 	}
 	
+	public void getselfInfo() {
+		
+		Consumer consumer = ConsumerDAO.getInstance().getselfInfo();
+		
+		System.out.println("이름 : " + consumer.getConsumerName());
+		System.out.println("아이디 : " + consumer.getConsumerId());
+		System.out.println("비밀번호 :" + consumer.getConsumerPw());
+		System.out.println("닉네임 : " + consumer.getConsumerNickName());
+		System.out.println("전화번호 : " + consumer.getConsumerTell());
+		System.out.println("이메일 : " + consumer.getConsumerEmail());
+		System.out.println("주소 :" + consumer.getConsumerAddress());
+		}
 }

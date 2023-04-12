@@ -52,23 +52,23 @@ private static ConsumerDAO consumerDao = new ConsumerDAO();
 	
 	
 	
-	
 	//회원가입
 	
 	public int consumerAdd(Consumer consumer) {
 		int result = 0;
 		try {
 			conn();
-			String sql = "insert into consumer values (?,?,?,?,?,?,?)";
+			String sql = "insert into consumer values (?,?,?,?,?,?,?,?,'C')";
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, consumer.getConsumerId());
-			pstmt.setString(2, consumer.getConsumerPw());
-			pstmt.setString(3, consumer.getConsumerPw2());
-			pstmt.setString(4, consumer.getConsumerName());
+			pstmt.setString(1, consumer.getConsumerName());
+			pstmt.setString(2, consumer.getConsumerId());
+			pstmt.setString(3, consumer.getConsumerPw());
+			pstmt.setString(4, consumer.getConsumerPw2());
 			pstmt.setString(5, consumer.getConsumerNickName());
 			pstmt.setString(6, consumer.getConsumerTell());
-			pstmt.setString(7, consumer.getConsumerAddress());
+			pstmt.setString(7, consumer.getConsumerEmail());
+			pstmt.setString(8, consumer.getConsumerAddress());
 			
 			result = pstmt.executeUpdate();
 			
@@ -87,9 +87,9 @@ private static ConsumerDAO consumerDao = new ConsumerDAO();
 		
 	}
 	
-	//회원정보 보기
+	//로그인 된 사람의 내정보보기
 	
-	public Consumer getselfInfo(String consumerId) {
+	public Consumer getselfInfo() {
 		Consumer consumer = null;
 		try {
 			conn();
@@ -97,9 +97,21 @@ private static ConsumerDAO consumerDao = new ConsumerDAO();
 			String sql = "SELECT * FROM consumer WHERE consumerId = ?";
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, consumerId);
+			pstmt.setString(1,ConsumerService.ConsumerInfo.getConsumerId());
 			
 			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				consumer =new Consumer();
+				
+				consumer.setConsumerName(rs.getString("consumerName"));
+				consumer.setConsumerId(rs.getString("consumerId"));
+				consumer.setConsumerPw(rs.getString("consumerPw"));
+				consumer.setConsumerNickName(rs.getString("consumerNickname"));
+				consumer.setConsumerTell(rs.getString("consumerTel"));
+				consumer.setConsumerEmail(rs.getString("consumerEmail"));
+				consumer.setConsumerAddress(rs.getString("consumerAddress"));
+			}
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -109,7 +121,8 @@ private static ConsumerDAO consumerDao = new ConsumerDAO();
 			return consumer;
 		}
 	
-
+	
+	
 	//회원정보 수정
 	//아이디 변경
 	public int consumerUpdate1(Consumer consumer) {
@@ -212,7 +225,6 @@ private static ConsumerDAO consumerDao = new ConsumerDAO();
 		}
 		return result;
 	}
-	
 	
 
 	
