@@ -27,13 +27,14 @@ public class BookDAO extends DAO {
 		Book book = null;
 		try {
 			conn();
-			
-			String sql = "SELECT * FROM book WHERE bookName Like? OR bookWriter Like? ";
+
+			String sql = "SELECT * FROM book WHERE bookName Like? OR bookWriter Like? OR bookGenre Like?";
 
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, "%" + bookName + "%");
 			pstmt.setString(2, "%" + bookName + "%");
-			
+			pstmt.setString(3, "%" + bookName + "%");
+
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
@@ -55,7 +56,7 @@ public class BookDAO extends DAO {
 
 	}
 
-	// 책 제목 (선택)
+	// 책(선택)
 	public Book getsearchBookName(int choice) {
 		Book book = null;
 		try {
@@ -103,7 +104,7 @@ public class BookDAO extends DAO {
 
 			if (result == 1) {
 				Book book = getsearchBookName(choice);
-				
+
 				conn();
 				String sql2 = "insert into buyingHistory values (?,?,?,?,?,sysdate)";
 				pstmt = conn.prepareStatement(sql2);
@@ -125,8 +126,6 @@ public class BookDAO extends DAO {
 		return result;
 	}
 
-	
-	
 	// 로그인된 사람의 구매내역보기
 
 	public List<BuyingHistory> getselfhistory() {
@@ -135,20 +134,21 @@ public class BookDAO extends DAO {
 		try {
 			conn();
 			String sql = "SELECT * FROM buyingHistory WHERE consumerId = ?";
-			
+
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1,ConsumerService.ConsumerInfo.getConsumerId());
-			
+			pstmt.setString(1, ConsumerService.ConsumerInfo.getConsumerId());
+
 			rs = pstmt.executeQuery();
-			
-		while(rs.next()) {
-			history = new BuyingHistory(); 
-			history.setBookName(rs.getString("bookName"));
-			history.setBookWriter(rs.getString("bookWriter"));
-			history.setBookPriced(rs.getInt("bookPriced"));
-			history.setBookId(rs.getInt("bookId"));
-			buyinglist.add(history);
-		}
+
+			while (rs.next()) {
+				history = new BuyingHistory();
+				history.setBookName(rs.getString("bookName"));
+				history.setBookWriter(rs.getString("bookWriter"));
+				history.setBookPriced(rs.getInt("bookPriced"));
+				history.setBookId(rs.getInt("bookId"));
+				history.setDate(rs.getString("create_date"));
+				buyinglist.add(history);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -157,72 +157,72 @@ public class BookDAO extends DAO {
 		return buyinglist;
 
 	}
-	// 책 작가 검색
-	public List<Book> getBookWriter(String bookWriter) {
-		List<Book> booklist = new ArrayList<>();
-		Book book = null;
-		try {
-			conn();
-
-			String sql = "SELECT * FROM book WHERE bookWriter Like?";
-
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%" + bookWriter + "%");
-
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				book = new Book();
-
-				book.setBookName(rs.getString("bookName"));
-				book.setBookWriter(rs.getString("bookWriter"));
-				book.setBookPriced(rs.getInt("bookPriced"));
-				book.setBookId(rs.getInt("bookId"));
-
-				booklist.add(book);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			disconn();
-		}
-		return booklist;
-
-	}
-
-	// 책 장르 검색
-	public List<Book> getBookGenre(String bookGenre) {
-		List<Book> booklist = new ArrayList<>();
-		Book book = null;
-		try {
-			conn();
-
-			String sql = "SELECT * FROM book WHERE bookGenre Like?";
-
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "%" + bookGenre + "%");
-
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				book = new Book();
-
-				book.setBookName(rs.getString("bookName"));
-				book.setBookWriter(rs.getString("bookWriter"));
-				book.setBookGenre(rs.getString("bookGenre"));
-				book.setBookPriced(rs.getInt("bookPriced"));
-				book.setBookLocation(rs.getString("bookId"));
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			disconn();
-		}
-		return booklist;
-
-	}
+//	// 책 작가 검색
+//	public List<Book> getBookWriter(String bookWriter) {
+//		List<Book> booklist = new ArrayList<>();
+//		Book book = null;
+//		try {
+//			conn();
+//
+//			String sql = "SELECT * FROM book WHERE bookWriter Like?";
+//
+//			pstmt = conn.prepareStatement(sql);
+//			pstmt.setString(1, "%" + bookWriter + "%");
+//
+//			rs = pstmt.executeQuery();
+//
+//			while (rs.next()) {
+//				book = new Book();
+//
+//				book.setBookName(rs.getString("bookName"));
+//				book.setBookWriter(rs.getString("bookWriter"));
+//				book.setBookPriced(rs.getInt("bookPriced"));
+//				book.setBookId(rs.getInt("bookId"));
+//
+//				booklist.add(book);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			disconn();
+//		}
+//		return booklist;
+//
+//	}
+//
+//	// 책 장르 검색
+//	public List<Book> getBookGenre(String bookGenre) {
+//		List<Book> booklist = new ArrayList<>();
+//		Book book = null;
+//		try {
+//			conn();
+//
+//			String sql = "SELECT * FROM book WHERE bookGenre Like?";
+//
+//			pstmt = conn.prepareStatement(sql);
+//			pstmt.setString(1, "%" + bookGenre + "%");
+//
+//			rs = pstmt.executeQuery();
+//
+//			while (rs.next()) {
+//				book = new Book();
+//
+//				book.setBookName(rs.getString("bookName"));
+//				book.setBookWriter(rs.getString("bookWriter"));
+//				book.setBookGenre(rs.getString("bookGenre"));
+//				book.setBookPriced(rs.getInt("bookPriced"));
+//				book.setBookLocation(rs.getString("bookId"));
+//
+//			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			disconn();
+//		}
+//		return booklist;
+//
+//	}
 
 	// best도서
 	public List<Book> getBestBook() {
@@ -250,4 +250,117 @@ public class BookDAO extends DAO {
 		return booklist;
 	}
 
+	// 책 추가
+
+	public int bookAdd(Book book) {
+		int result = 0;
+
+		try {
+			conn();
+			String sql = "insert into book values(?,?,?,?,? ,0,?)";
+
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, book.getBookName());
+			pstmt.setString(2, book.getBookWriter());
+			pstmt.setString(3, book.getBookGenre());
+			pstmt.setInt(4, book.getBookPriced());
+			pstmt.setString(5, book.getBookLocation());
+			pstmt.setInt(6, book.getBookId());
+
+			result = pstmt.executeUpdate();
+
+			if (result == 1) {
+				System.out.println("책이 추가되었습니다");
+			} else {
+				System.out.println("추가 실패");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			disconn();
+		}
+		return result;
+	}
+
+	// 책 수정 1.제목 수정 | 2.저자 수정 | 3.장르 수정 | 4.가격 수정 |
+	// 책 이름 수정
+	public int bookUpdate1(Book book,int choice) {
+		int result = 0;
+		try {
+			conn();
+			String sql = "update book set bookName = ? where bookId = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, book.getBookName());
+			pstmt.setInt(2,choice);
+
+			result = pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			disconn();
+		}
+		return result;
+
+	}
+	public int bookUpdate2(Book book,int choice) {
+		int result = 0;
+		try {
+			conn();
+			String sql = "update book set bookWriter = ? where bookId = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, book.getBookWriter());
+			pstmt.setInt(2,choice);
+
+			result = pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			disconn();
+		}
+		return result;
+
+	}
+	public int bookUpdate3(Book book,int choice) {
+		int result = 0;
+		try {
+			conn();
+			String sql = "update book set bookGenre = ? where bookId = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, book.getBookGenre());
+			pstmt.setInt(2,choice);
+
+			result = pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			disconn();
+		}
+		return result;
+
+	}
+	public int bookUpdate4(Book book,int choice) {
+		int result = 0;
+		try {
+			conn();
+			String sql = "update book set bookPriced = ? where bookId = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, book.getBookPriced());
+			pstmt.setInt(2,choice);
+
+			result = pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			disconn();
+		}
+		return result;
+
+	}
+	
+	
 }

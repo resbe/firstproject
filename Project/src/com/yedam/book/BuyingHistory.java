@@ -15,5 +15,5 @@ public class BuyingHistory {
 	private String bookWriter;
 	private int bookPriced;
 	private int bookId;
-	
+	private String date;
 }
